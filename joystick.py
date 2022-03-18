@@ -23,14 +23,7 @@ class my_joystick:
   }
 
   def get_speed(self):
-    if self.get_axis("speed") > 0.5:
-      return 3
-    elif self.get_axis("speed") > 0:
-      return 2
-    elif self.get_axis("speed") > -0.5:
-      return 1
-    else:
-      return 0
+    return ((1+self.get_axis("speed")) / 2)**2
 
   def __init__(self):
     self.joy = pygame.joystick.Joystick(0)
@@ -40,7 +33,11 @@ class my_joystick:
     pygame.event.pump()
 
   def get_axis(self, name):
-    return -self.joy.get_axis(self.joy_axes[name])
+    eps = 0.01
+    value = -self.joy.get_axis(self.joy_axes[name])
+    if abs(value) < eps:
+      value = 0
+    return value
   
   def get_button(self, name):
     return self.joy.get_button(self.joy_buttons[name])
