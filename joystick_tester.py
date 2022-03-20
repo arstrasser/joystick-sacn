@@ -18,11 +18,12 @@ while True:
   axes = ""
   for a in range(joy.get_numaxes()):
     axes += str(joy.get_axis(a))+"\t"
-  print("Axes:\t"+axes)
+  # print("Axes:\t"+axes)
 
   buttons = ""
   for b in range(joy.get_numbuttons()):
     buttons += str(joy.get_button(b))+"\t"
-  print("Btns:\t"+buttons)
+  # print("Btns:\t"+buttons)
+  print(joy.get_hat(0))
 
   time.sleep(0.1)

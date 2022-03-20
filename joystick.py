@@ -22,8 +22,9 @@ class my_joystick:
     "speed": 3
   }
 
-  def get_speed(self):
-    return ((1+self.get_axis("speed")) / 2)**2
+  joy_buttons = {
+    "trigger": 1
+  }
 
   def __init__(self):
     self.joy = pygame.joystick.Joystick(0)
@@ -41,4 +42,10 @@ class my_joystick:
   
   def get_button(self, name):
     return self.joy.get_button(self.joy_buttons[name])
+  
+  def get_hat(self):
+    return self.joy.get_hat(0)
+
+  def get_speed(self):
+    return ((1+self.get_axis("speed")) / 2)**2
 

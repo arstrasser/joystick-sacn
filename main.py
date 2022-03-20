@@ -10,7 +10,7 @@ sender.start()
 
 sender.activate_output(universe)
 sender[universe].multicast = False
-sender[universe].destination = "10.3.8.169"
+sender[universe].destination = "10.3.254.2"
 # sender[universe].destination = "10.101.200.1"
 
 values = [0] * 29
@@ -47,27 +47,52 @@ def getValues(value, args):
     values.append(round(v*255))
   return values
 
-# args = (min, max, inc)
-pan_args = (-270, 270, 10)
-tilt_args = (-140, 140, 10)
+def addDMX(dmx, startAddress, values):
+  for i in range(0, len(values)):
+    dmx[i + startAddress - 1] = values[i]
+
+# args = (min, max, inc, dmx)
+pan_args = (-270, 270, 10, 1)
+tilt_args = (-140, 140, 10, 60)
+iris_args = (0, 75, 75, 98)
 
 try:
   #(-1 to 1)
   pan = 0
   tilt = 0
+  #(0 to 1)
+  iris = 1
+  irisInertia = 0
   while True:
     joy.update()
     time.sleep(0.01)
     speed = joy.get_speed() * 0.01
     pan += joy.get_axis("pan")*speed
     tilt += joy.get_axis("tilt")*speed
+    if joy.get_hat()[1] > 0:
+      if irisInertia <= 0:
+        irisInertia = 1
+      irisInertia += 0.15
+    elif joy.get_hat()[1] < 0:
+      if irisInertia >= 0:
+        irisInertia = -1
+      irisInertia -= 0.15
+
+    else:
+      irisInertia = 0
+    iris += irisInertia*0.0005
     pan = clip(pan, minval=-1, maxval=1)
     tilt = clip(tilt, minval=-1, maxval=1)
+    iris = clip(iris, minval=0, maxval=1)
 
-    dmx = getValues(pan, pan_args)
-    dmx = dmx + ([0] * (59 - len(dmx)))
-    dmx += getValues(tilt, tilt_args)
-    
+
+    dmx = [0] * 100
+    addDMX(dmx, 1, [1, 2, 3])
+    addDMX(dmx, pan_args[3], getValues(pan, pan_args))
+    addDMX(dmx, tilt_args[3], getValues(tilt, tilt_args))
+    addDMX(dmx, iris_args[3], [round((1 - iris)*255)])
+    # print(dmx)
+
     sender[universe].dmx_data = tuple(dmx)
 
     
