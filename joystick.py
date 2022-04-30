@@ -35,7 +35,7 @@ class my_joystick:
 
   def get_axis(self, name):
     eps = 0.01
-    value = -self.joy.get_axis(self.joy_axes[name])
+    value = self.joy.get_axis(self.joy_axes[name])
     if abs(value) < eps:
       value = 0
     return value

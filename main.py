@@ -10,8 +10,8 @@ sender.start()
 
 sender.activate_output(universe)
 sender[universe].multicast = False
-sender[universe].destination = "10.3.254.2"
-# sender[universe].destination = "10.101.200.1"
+# sender[universe].destination = "10.3.254.2"
+sender[universe].destination = "10.101.200.1"
 
 values = [0] * 29
 
